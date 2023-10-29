@@ -7,11 +7,11 @@ module.exports = {
 	async execute(interaction) {
 
 		// Verifica si el autor del mensaje tiene permisos para mutear a los usuarios.
-    if (!interaction.member.permissions.has('MANAGE_ROLES')) {
+    if (interaction.member.roles.cache.find((r) => r.name === 'Oficiales') == undefined) {
       return interaction.reply('No tienes permiso para ejecutar este comando.');
     }
       
-          // Obtiene el rol "hablador" por nombre.
+    // Obtiene el rol "hablador" por nombre.
     const role = interaction.guild.roles.cache.find((r) => r.name === 'Hablador');
 
     // Verifica si se encontró el rol.
@@ -26,6 +26,15 @@ module.exports = {
       member.voice.setMute(true)
         .catch((error) => console.error(error));
     });
-    interaction.reply(`Se han muteado ${[...membersToMute].length} weones`)
+    switch ([...membersToMute].length) {
+      case 0:
+        interaction.reply(`No hay weones para mutear`);
+        break;
+      case 1:
+        interaction.reply(`Se ha muteado a 1 weon`);
+        break;
+      default:
+        interaction.reply(`Se han muteado ${[...membersToMute].length} weones`);
+    }
 	},
 };
